@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        body{
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f4f7d5, #f3cf03);
+        }
+        .message-page{
+            border: none;
+            padding: 6px;
+            margin: 8px;
+            text-align: center;
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 0.233);
+            background: linear-gradient(135deg, #f8b8df, #fac0e0);
+            border-radius: 8px;
+            font-size: 0.8rem;
+            word-spacing: 10px;
+            letter-spacing: 1px;
+            transition: font-size 0.3s ease;
+        }
+        .message-page:hover{
+            font-size: 1rem;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="message-page" id="typing">    </div>
+
+    <script>
+        const text = `Thank you so much for visiting this website on your special day. This Page will Crashed in 24 hours - just like special moments, it's here only for you today`;
+
+        let index = 0;
+        const speed = 50;
+        const element = document.getElementById("typing");
+
+        function typeEffect(){
+            if(index<text.length){
+                element.textContent += text.charAt(index);
+                index++;
+                setTimeout(typeEffect, speed);
+            }else{
+                element.style.bordertRight = "none";
+            }
+        }
+        typeEffect();
+        // setTimeout(function(){
+        //     window.location.href = "index.html";
+        // },30000);
+    </script>
+</body>
+</html>

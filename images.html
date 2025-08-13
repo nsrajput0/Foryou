@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Image Slider - Responsive Circular Carousel</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #fff8b6 0%, #ffe600 100%);
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            perspective: 1200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slider-wrapper {
+            position: relative;
+            width: 220px;
+            height: 200px;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            cursor: grab;
+            transition: all 0.4s ease;
+        }
+
+        .slide:active {
+            cursor: grabbing;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 15px;
+            transition: transform 0.4s ease;
+        }
+
+        .slide:hover img {
+            transform: scale(1.05);
+        }
+
+        .slide:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Controls */
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: rgb(0, 0, 0);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .play-pause-btn.paused::after {
+            content: '▶';
+        }
+
+        .play-pause-btn.playing::after {
+            content: '⏸';
+        }
+
+        /* Instructions */
+        .instructions {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            text-align: center;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px 25px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .slider-wrapper {
+                width: 200px;
+                height: 160px;
+            }
+            
+            .instructions {
+                font-size: 14px;
+                padding: 12px 20px;
+            }
+            
+            .control-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .slider-wrapper {
+                width: 210px;
+                height: 140px;
+            }
+            
+            .instructions {
+                font-size: 12px;
+                padding: 10px 15px;
+            }
+            
+            .controls {
+                bottom: 20px;
+                gap: 10px;
+            }
+            
+            .control-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .slider-wrapper {
+                width: 400px;
+                height: 260px;
+            }
+        }
+
+        /* Loading animation */
+        .slide img {
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slider-container">
+        <div class="instructions">
+            <a class="font-semibold" href="">Next ></a>
+        </div>
+        
+        <div class="slider-wrapper" id="sliderWrapper">
+            <div class="slide">
+                <img src="img1.jpg" alt="Slide 1" loading="lazy">
+            </div>
+            <div class="slide">
+                <img src="img2.jpg" alt="Slide 2" loading="lazy">
+            </div>
+            <div class="slide">
+                <img src="img3.jpg" alt="Slide 3" loading="lazy">
+            </div>
+            <div class="slide">
+                <img src="img4.jpg" alt="Slide 4" loading="lazy">
+            </div>
+            <div class="slide">
+                <img src="img5.jpg" alt="Slide 5" loading="lazy">
+            </div>
+            <div class="slide">
+                <img src="img6.jpg" loading="lazy">
+            </div>
+            <div class="slide">
+                <img src="img7.jpg" alt="Slide 7" loading="lazy">
+            </div>
+            <div class="slide">
+                <img src="img8.jpg" alt="Slide 8" loading="lazy">
+            </div>
+        </div>
+        
+        <div class="controls">
+            <div class="control-btn" id="prevBtn">←</div>
+            <div class="control-btn play-pause-btn playing" id="playPauseBtn"></div>
+            <div class="control-btn" id="nextBtn">→</div>
+        </div>
+    </div>
+
+    <script>
+        class Slider3D {
+            constructor() {
+                this.sliderWrapper = document.getElementById('sliderWrapper');
+                this.slides = document.querySelectorAll('.slide');
+                this.prevBtn = document.getElementById('prevBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.playPauseBtn = document.getElementById('playPauseBtn');
+                
+                this.currentRotation = 0;
+                this.slideCount = this.slides.length;
+                this.angleStep = 360 / this.slideCount;
+                this.radius = 280;
+                this.autoplayInterval = null;
+                this.isPlaying = true;
+                this.autoplayDelay = 1500;
+                
+                // Touch/Mouse interaction
+                this.isDragging = false;
+                this.startX = 0;
+                this.startY = 0;
+                this.lastRotation = 0;
+                this.dragSensitivity = 0.5;
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupSlides();
+                this.setupEventListeners();
+                this.startAutoplay();
+                this.updateSliderTransform();
+            }
+            
+            setupSlides() {
+                this.slides.forEach((slide, index) => {
+                    const angle = index * this.angleStep;
+                    const x = Math.sin(angle * Math.PI / 180) * this.radius;
+                    const z = Math.cos(angle * Math.PI / 180) * this.radius;
+                    
+                    slide.style.transform = `translate3d(${x}px, 0, ${z}px) rotateY(${angle}deg)`;
+                });
+            }
+            
+            setupEventListeners() {
+                // Control buttons
+                this.prevBtn.addEventListener('click', () => this.previousSlide());
+                this.nextBtn.addEventListener('click', () => this.nextSlide());
+                this.playPauseBtn.addEventListener('click', () => this.toggleAutoplay());
+                
+                // Mouse wheel
+                this.sliderWrapper.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    const delta = e.deltaY > 0 ? 1 : -1;
+                    this.rotate(delta * this.angleStep);
+                }, { passive: false });
+                
+                // Touch events
+                this.sliderWrapper.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: true });
+                this.sliderWrapper.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
+                this.sliderWrapper.addEventListener('touchend', (e) => this.handleTouchEnd(e), { passive: true });
+                
+                // Mouse events for desktop drag
+                this.sliderWrapper.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+                document.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+                document.addEventListener('mouseup', (e) => this.handleMouseUp(e));
+                
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowLeft') this.previousSlide();
+                    if (e.key === 'ArrowRight') this.nextSlide();
+                    if (e.key === ' ') {
+                        e.preventDefault();
+                        this.toggleAutoplay();
+                    }
+                });
+                
+                // Responsive radius adjustment
+                window.addEventListener('resize', () => {
+                    this.adjustRadius();
+                    this.setupSlides();
+                });
+                
+                this.adjustRadius();
+            }
+            
+            adjustRadius() {
+                const screenWidth = window.innerWidth;
+                if (screenWidth <= 480) {
+                    this.radius = 200;
+                } else if (screenWidth <= 768) {
+                    this.radius = 240;
+                } else if (screenWidth >= 1200) {
+                    this.radius = 350;
+                } else {
+                    this.radius = 280;
+                }
+            }
+            
+            handleTouchStart(e) {
+                this.isDragging = true;
+                this.startX = e.touches[0].clientX;
+                this.startY = e.touches[0].clientY;
+                this.lastRotation = this.currentRotation;
+                this.pauseAutoplay();
+            }
+            
+            handleTouchMove(e) {
+                if (!this.isDragging) return;
+                e.preventDefault();
+                
+                const currentX = e.touches[0].clientX;
+                const deltaX = currentX - this.startX;
+                const rotationDelta = deltaX * this.dragSensitivity;
+                
+                this.currentRotation = this.lastRotation + rotationDelta;
+                this.updateSliderTransform();
+            }
+            
+            handleTouchEnd(e) {
+                this.isDragging = false;
+                this.snapToNearestSlide();
+                if (this.isPlaying) {
+                    this.startAutoplay();
+                }
+            }
+            
+            handleMouseDown(e) {
+                this.isDragging = true;
+                this.startX = e.clientX;
+                this.startY = e.clientY;
+                this.lastRotation = this.currentRotation;
+                this.pauseAutoplay();
+                e.preventDefault();
+            }
+            
+            handleMouseMove(e) {
+                if (!this.isDragging) return;
+                
+                const deltaX = e.clientX - this.startX;
+                const rotationDelta = deltaX * this.dragSensitivity;
+                
+                this.currentRotation = this.lastRotation + rotationDelta;
+                this.updateSliderTransform();
+            }
+            
+            handleMouseUp(e) {
+                if (this.isDragging) {
+                    this.isDragging = false;
+                    this.snapToNearestSlide();
+                    if (this.isPlaying) {
+                        this.startAutoplay();
+                    }
+                }
+            }
+            
+            snapToNearestSlide() {
+                const nearestAngle = Math.round(this.currentRotation / this.angleStep) * this.angleStep;
+                this.currentRotation = nearestAngle;
+                this.updateSliderTransform();
+            }
+            
+            rotate(angle) {
+                this.currentRotation += angle;
+                this.updateSliderTransform();
+            }
+            
+            updateSliderTransform() {
+                this.sliderWrapper.style.transform = `rotateY(${-this.currentRotation}deg)`;
+            }
+            
+            nextSlide() {
+                this.rotate(this.angleStep);
+            }
+            
+            previousSlide() {
+                this.rotate(-this.angleStep);
+            }
+            
+            startAutoplay() {
+                this.pauseAutoplay();
+                this.autoplayInterval = setInterval(() => {
+                    this.nextSlide();
+                }, this.autoplayDelay);
+            }
+            
+            pauseAutoplay() {
+                if (this.autoplayInterval) {
+                    clearInterval(this.autoplayInterval);
+                    this.autoplayInterval = null;
+                }
+            }
+            
+            toggleAutoplay() {
+                this.isPlaying = !this.isPlaying;
+                
+                if (this.isPlaying) {
+                    this.playPauseBtn.classList.remove('paused');
+                    this.playPauseBtn.classList.add('playing');
+                    this.startAutoplay();
+                } else {
+                    this.playPauseBtn.classList.remove('playing');
+                    this.playPauseBtn.classList.add('paused');
+                    this.pauseAutoplay();
+                }
+            }
+        }
+        
+        // Initialize the slider when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new Slider3D();
+        });
+        
+        // Prevent context menu on long press for better mobile experience
+        document.addEventListener('contextmenu', (e) => {
+            if (e.target.closest('.slider-wrapper')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
